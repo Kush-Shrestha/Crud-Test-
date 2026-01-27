@@ -1,9 +1,9 @@
 ﻿namespace Crud.Entity
 {
-    public class Student
+    public class Subject
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
-        public 
+        public string? description { get; set; }
     }
 }
