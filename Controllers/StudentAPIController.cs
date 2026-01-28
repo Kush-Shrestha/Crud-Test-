@@ -7,5 +7,9 @@ namespace Crud.Controllers
     [ApiController]
     public class StudentAPIController : ControllerBase
     {
-    }
+        [HttpGet]
+        public IActionResult GetAllStudents()
+        {
+
+        }
 }
