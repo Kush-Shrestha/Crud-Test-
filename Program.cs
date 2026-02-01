@@ -1,4 +1,5 @@
 using Crud.Data;
+using Crud.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register Service Layer
+builder.Services.AddScoped<ISemesterService, SemesterService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<ISemesterSubjectService, SemesterSubjectService>();
 
 var app = builder.Build();
 

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Crud.Entity;
-using Crud.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Crud.DTO;
+using Crud.Service;
 
 namespace Crud.Controllers
 {
@@ -10,67 +8,45 @@ namespace Crud.Controllers
     [ApiController]
     public class SubjectController : ControllerBase
     {
-        private readonly ApplicationDBContext dbContext;
-        public SubjectController(ApplicationDBContext dBContext)
+        private readonly ISubjectService _subjectService;
+
+        public SubjectController(ISubjectService subjectService)
         {
-            dbContext = dBContext;
+            _subjectService = subjectService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var subjects = dbContext.Subjects.ToList();
-            var subjectDTO = new List<SubjectDTO>();
-            foreach (var subject in subjects)
-            {
-                subjectDTO.Add(new SubjectDTO
-                {
-                    Id = subject.Id,
-                    Name = subject.Name,
-                    description = subject.description
-                });
-            }
-            return Ok(subjectDTO);
+            var result = _subjectService.GetAll();
+
+            if (!result.Success)
+                return BadRequest(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-            var subject = dbContext.Subjects.Find(id);
-            if (subject == null)
-            {
-                return NotFound();
-            }
-            var subjectDTO = new SubjectDTO
-            {
-                Id = subject.Id,
-                Name = subject.Name,
-                description = subject.description
-            };
-            return Ok(subjectDTO);
+            var result = _subjectService.GetById(id);
+
+            if (!result.Success)
+                return NotFound(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] SubjectDTO subjectDto)
         {
-            //map or convert DTO to Entity
-            var subject = new Subject
-            {
-                Id = Guid.NewGuid(),
-                Name = subjectDto.Name,
-                description = subjectDto.description
-            };
-            dbContext.Subjects.Add(subject);
-            dbContext.SaveChanges();
+            var result = _subjectService.Create(subjectDto);
 
-            var createdSubjectDTO = new SubjectDTO
-            {
-                Id = subject.Id,
-                Name = subject.Name,
-                description = subject.description
-            };
-            return CreatedAtAction(nameof(GetById), new { id = subject.Id }, createdSubjectDTO);
+            if (!result.Success)
+                return BadRequest(new { message = result.ErrorMessage });
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data);
         }
     }
 }

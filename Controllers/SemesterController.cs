@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Crud.Entity;
-using Crud.Data;
+﻿using Microsoft.AspNetCore.Mvc;
 using Crud.DTO;
+using Crud.Service;
 
 namespace Crud.Controllers
 {
@@ -10,64 +8,45 @@ namespace Crud.Controllers
     [ApiController]
     public class SemesterController : ControllerBase
     {
-        private readonly ApplicationDBContext dbContext;
-        public SemesterController(ApplicationDBContext dBContext)
+        private readonly ISemesterService _semesterService;
+
+        public SemesterController(ISemesterService semesterService)
         {
-            dbContext = dBContext;
+            _semesterService = semesterService;
         }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-          var semesters = dbContext.Semester.ToList();
-            var semesterDTO = new List<SemesterDTO>();
-            foreach(var sem in semesters)
-            {
-                semesterDTO.Add(new SemesterDTO
-                {
-                    Id=sem.Id,
-                    Name=sem.Name
-                });
-            }
-            return Ok(semesters);
+            var result = _semesterService.GetAll();
+            
+            if (!result.Success)
+                return BadRequest(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
         }
 
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-            var semester = dbContext.Semester.Find(id);
-            if (semester == null)
-            {
-                return NotFound();
-            }
-            var semesterDTO = new SemesterDTO
-            {
-                Id = semester.Id,
-                Name = semester.Name
-            };
-            return Ok(semesterDTO);
+            var result = _semesterService.GetById(id);
+
+            if (!result.Success)
+                return NotFound(new { message = result.ErrorMessage });
+
+            return Ok(result.Data);
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] SemesterDTO semesterDto)
         {
-            //map or convert DTO to Entity
-            var semester = new Semester
-            {
-                Id = Guid.NewGuid(),
-                Name = semesterDto.Name
-            };
-            dbContext.Semester.Add(semester);
-            dbContext.SaveChanges();
+            var result = _semesterService.Create(semesterDto);
 
-            var createdSemesterDTO = new SemesterDTO
-            {
-                Id = semester.Id,
-                Name = semester.Name
-            };
-            return CreatedAtAction(nameof(GetById), new { id = semesterDto.Id }, semesterDto);
+            if (!result.Success)
+                return BadRequest(new { message = result.ErrorMessage });
 
+            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data);
         }
-
     }
 }

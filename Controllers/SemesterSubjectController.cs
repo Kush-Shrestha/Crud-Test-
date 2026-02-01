@@ -6,19 +6,19 @@ namespace Crud.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StudentController : ControllerBase
+    public class SemesterSubjectController : ControllerBase
     {
-        private readonly IStudentService _studentService;
+        private readonly ISemesterSubjectService _semesterSubjectService;
 
-        public StudentController(IStudentService studentService)
+        public SemesterSubjectController(ISemesterSubjectService semesterSubjectService)
         {
-            _studentService = studentService;
+            _semesterSubjectService = semesterSubjectService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var result = _studentService.GetAll();
+            var result = _semesterSubjectService.GetAll();
 
             if (!result.Success)
                 return BadRequest(new { message = result.ErrorMessage });
@@ -30,19 +30,7 @@ namespace Crud.Controllers
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-            var result = _studentService.GetById(id);
-
-            if (!result.Success)
-                return NotFound(new { message = result.ErrorMessage });
-
-            return Ok(result.Data);
-        }
-
-        [HttpGet]
-        [Route("{id:guid}/details")]
-        public IActionResult GetStudentDetails([FromRoute] Guid id)
-        {
-            var result = _studentService.GetStudentDetails(id);
+            var result = _semesterSubjectService.GetById(id);
 
             if (!result.Success)
                 return NotFound(new { message = result.ErrorMessage });
@@ -51,9 +39,9 @@ namespace Crud.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] StudentDTO studentDto)
+        public IActionResult Create([FromBody] SemesterSubjectDTO semesterSubjectDto)
         {
-            var result = _studentService.Create(studentDto);
+            var result = _semesterSubjectService.Create(semesterSubjectDto);
 
             if (!result.Success)
                 return BadRequest(new { message = result.ErrorMessage });
