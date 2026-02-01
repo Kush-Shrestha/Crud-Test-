@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Crud.DTO;
-using Crud.Service;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Crud.Data;
+using Crud.dtos;
+using Crud.Entity;
 
 namespace Crud.Controllers
 {
@@ -8,45 +11,101 @@ namespace Crud.Controllers
     [ApiController]
     public class SemesterSubjectController : ControllerBase
     {
-        private readonly ISemesterSubjectService _semesterSubjectService;
-
-        public SemesterSubjectController(ISemesterSubjectService semesterSubjectService)
+        private readonly ApplicationDbContext _context;
+        
+        public SemesterSubjectController(ApplicationDbContext dbContext)
         {
-            _semesterSubjectService = semesterSubjectService;
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var result = _semesterSubjectService.GetAll();
-
-            if (!result.Success)
-                return BadRequest(new { message = result.ErrorMessage });
-
-            return Ok(result.Data);
-        }
-
-        [HttpGet]
-        [Route("{id:guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
-        {
-            var result = _semesterSubjectService.GetById(id);
-
-            if (!result.Success)
-                return NotFound(new { message = result.ErrorMessage });
-
-            return Ok(result.Data);
+            _context = dbContext;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] SemesterSubjectDTO semesterSubjectDto)
+        public async Task<IActionResult> Add(SemesterSubjectDTO dto)
         {
-            var result = _semesterSubjectService.Create(semesterSubjectDto);
+            var semesterSubject = new Semester_Subject
+            {
+                SemesterId = dto.SemesterId,
+                SubjectId = dto.SubjectId
+            };
+            _context.Semester_Subjects.Add(semesterSubject);
+            await _context.SaveChangesAsync();
+            return Ok("Semester-Subject link created successfully");
+        }
 
-            if (!result.Success)
-                return BadRequest(new { message = result.ErrorMessage });
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var data = await _context.Semester_Subjects
+                .Include(ss => ss.Semester)
+                .Include(ss => ss.Subject)
+                .Select(ss => new
+                {
+                    ss.Id,
+                    Semester = ss.Semester == null ? null : new
+                    {
+                        ss.Semester.Id,
+                        ss.Semester.Name
+                    },
+                    Subject = ss.Subject == null ? null : new
+                    {
+                        ss.Subject.Id,
+                        ss.Subject.Name,
+                        ss.Subject.Description
+                    }
+                })
+                .ToListAsync();
+            
+            if (!data.Any())
+            {
+                return NotFound();
+            }
+            return Ok(data);
+        }
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Data.Id }, result.Data);
+        [HttpGet]
+        [Route("{Id:int}")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+            var data = await _context.Semester_Subjects
+                .Include(ss => ss.Semester)
+                .Include(ss => ss.Subject)
+                .Where(ss => ss.Id == Id)
+                .Select(ss => new
+                {
+                    ss.Id,
+                    Semester = ss.Semester == null ? null : new
+                    {
+                        ss.Semester.Id,
+                        ss.Semester.Name
+                    },
+                    Subject = ss.Subject == null ? null : new
+                    {
+                        ss.Subject.Id,
+                        ss.Subject.Name,
+                        ss.Subject.Description
+                    }
+                })
+                .FirstOrDefaultAsync();
+            
+            if (data is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(data);
+        }
+
+        [HttpDelete]
+        [Route("{Id:int}")]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var data = await _context.Semester_Subjects.FindAsync(Id);
+            if (data is null)
+                return NotFound();
+            
+            _context.Semester_Subjects.Remove(data);
+            await _context.SaveChangesAsync();
+
+            return Ok("Semester-Subject link deleted successfully");
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿namespace Crud.DTO
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Crud.dtos
 {
     public class SemesterDTO
     {
-        public Guid Id { get; set; }
         public required string Name { get; set; }
     }
 }

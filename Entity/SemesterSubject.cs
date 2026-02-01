@@ -1,11 +1,17 @@
-﻿namespace Crud.Entity
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Crud.Entity
 {
-    public class SemesterSubject
+    public class Semester_Subject
     {
-        public Guid Id { get; set;}
-        public Guid Semester_id { get; set; }
-        public Guid Subject_id { get; set; }
+        public int Id { get; set; }
+        
+        [ForeignKey("Semester")]
+        public int? SemesterId { get; set; }
         public Semester? Semester { get; set; }
+
+        [ForeignKey("Subject")]
+        public int? SubjectId { get; set; }
         public Subject? Subject { get; set; }
     }
 }

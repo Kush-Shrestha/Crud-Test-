@@ -2,8 +2,9 @@
 {
     public class Subject
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public required string Name { get; set; }
-        public string? description { get; set; }
+        public required string Description { get; set; }
+        public ICollection<Semester_Subject>? SemesterSubjects { get; set; }
     }
 }
