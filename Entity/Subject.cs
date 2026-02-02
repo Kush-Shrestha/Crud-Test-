@@ -1,0 +1,10 @@
+﻿namespace practicing.Entity
+{
+    public class Subject
+    {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        //public ICollection<AssignSubject>? Join { get; set; }
+    }
+}
