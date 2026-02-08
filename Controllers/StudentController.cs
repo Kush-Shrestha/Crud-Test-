@@ -96,7 +96,7 @@ namespace practicing.Controllers
             //    })
             //    .FirstOrDefaultAsync();
 
-            var student =await  _context.Students
+            var student = await  _context.Students
                 .Include(x => x.semester)
                 .ThenInclude(x=> x.join)
                 .ThenInclude( x => x.subject)
