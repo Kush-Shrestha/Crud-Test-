@@ -1,6 +1,6 @@
-﻿namespace Crud.dtos
+namespace practicing.Dtos
 {
-    public class SemesterSubjectDTO
+    public class SemesterSubjectDto
     {
         public int? SemesterId { get; set; }
         public int? SubjectId { get; set; }
