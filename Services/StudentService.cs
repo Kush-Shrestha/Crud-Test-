@@ -9,9 +9,9 @@ namespace practicing.Services
     {
         private readonly AppDbContext _context;
 
-        public StudentService(AppDbContext dbContext)
+        public StudentService(AppDbContext context)
         {
-            _context = dbContext;
+            _context = context;
         }
 
         public async Task<string> InsertStudent(StudentDto dto)

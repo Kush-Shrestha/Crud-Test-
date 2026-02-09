@@ -1,32 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Crud.Data;
-using Crud.dtos;
-using Crud.Entity;
+using practicing.Data;
+using practicing.Dtos;
+using practicing.Entity;
 
-namespace Crud.Controllers
+namespace practicing.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class SemesterSubjectController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
         
-        public SemesterSubjectController(ApplicationDbContext dbContext)
+        public SemesterSubjectController(AppDbContext dbContext)
         {
             _context = dbContext;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(SemesterSubjectDTO dto)
+        public async Task<IActionResult> Add(SemesterSubjectDto dto)
         {
             var semesterSubject = new Semester_Subject
             {
                 SemesterId = dto.SemesterId,
                 SubjectId = dto.SubjectId
             };
-            _context.Semester_Subjects.Add(semesterSubject);
+            _context.Set<Semester_Subject>().Add(semesterSubject);
             await _context.SaveChangesAsync();
             return Ok("Semester-Subject link created successfully");
         }
@@ -34,7 +34,7 @@ namespace Crud.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _context.Semester_Subjects
+            var data = await _context.Set<Semester_Subject>()
                 .Include(ss => ss.Semester)
                 .Include(ss => ss.Subject)
                 .Select(ss => new
@@ -65,7 +65,7 @@ namespace Crud.Controllers
         [Route("{Id:int}")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var data = await _context.Semester_Subjects
+            var data = await _context.Set<Semester_Subject>()
                 .Include(ss => ss.Semester)
                 .Include(ss => ss.Subject)
                 .Where(ss => ss.Id == Id)
@@ -98,11 +98,11 @@ namespace Crud.Controllers
         [Route("{Id:int}")]
         public async Task<IActionResult> Delete(int Id)
         {
-            var data = await _context.Semester_Subjects.FindAsync(Id);
+            var data = await _context.Set<Semester_Subject>().FindAsync(Id);
             if (data is null)
                 return NotFound();
             
-            _context.Semester_Subjects.Remove(data);
+            _context.Set<Semester_Subject>().Remove(data);
             await _context.SaveChangesAsync();
 
             return Ok("Semester-Subject link deleted successfully");

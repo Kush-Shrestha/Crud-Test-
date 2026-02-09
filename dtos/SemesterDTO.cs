@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Crud.dtos
+namespace practicing.Dtos
 {
-    public class SemesterDTO
+    public class SemesterDto
     {
         public required string Name { get; set; }
     }
