@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace practicing.Entity
+namespace practicing.Domain.Entity
 {
     public class Semester_Subject
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace practicing.Dtos
+namespace practicing.Domain.Dtos
 {
     public class StudentDtoRead
     {

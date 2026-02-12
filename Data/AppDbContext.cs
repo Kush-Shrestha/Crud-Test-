@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using practicing.Entity;
+using practicing.Domain.Entity;
 
 namespace practicing.Data
 {

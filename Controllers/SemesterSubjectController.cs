@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using practicing.Data;
+using practicing.Domain.Entity;
 using practicing.Dtos;
-using practicing.Entity;
 
 namespace practicing.Controllers
 {

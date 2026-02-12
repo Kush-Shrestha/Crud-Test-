@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using practicing.Data;
-using practicing.Dtos;
-using practicing.Entity;
+using practicing.Domain.Dtos;
+using practicing.Domain.Entity;
 
-namespace practicing.Services
+namespace practicing.Application.Repository
 {
-    public class StudentService : IStudentService
+    public class StudentRepository : IStudentRepository
     {
         private readonly AppDbContext _context;
 
-        public StudentService(AppDbContext context)
+        public StudentRepository(AppDbContext context)
         {
             _context = context;
         }

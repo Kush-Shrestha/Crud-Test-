@@ -1,4 +1,4 @@
-﻿namespace practicing.Entity
+﻿namespace practicing.Domain.Entity
 {
     public class Subject
     {

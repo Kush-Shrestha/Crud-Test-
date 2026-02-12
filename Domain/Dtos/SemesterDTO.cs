@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace practicing.Dtos
+namespace practicing.Domain.Dtos
 {
     public class SemesterDto
     {

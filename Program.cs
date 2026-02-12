@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using practicing.Application.Services;
 using practicing.Data;
-using practicing.Services;
 
 namespace practicing
 {
