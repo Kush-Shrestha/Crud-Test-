@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using practicing.Data;
 using practicing.Dtos;
+using practicing.Services;
 using practicing.Entity;
 using System.Net.WebSockets;
 
@@ -13,55 +14,37 @@ namespace practicing.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IStudentService _studentService;
 
-        public StudentController(AppDbContext dbContext)
+        public StudentController(IStudentService studentService)
         {
-            _context = dbContext;
+            _studentService = studentService;
         }
         [HttpPost]
         public async Task<IActionResult> InsertStudent(StudentDto dto)
         {
-            var SInfo = new Student
-            {
-                Name = dto.Name,
-                semesterId = dto.semesterId
-            };
-            _context.Students.Add(SInfo);
-            await _context.SaveChangesAsync();
-            return Ok("Added Successfully");
+           var SInfo = await _studentService.InsertStudent(dto);
+            return Ok(SInfo);
         }
 
         [HttpPost("Link_Semester")]
         public async Task<IActionResult> LinkSemester(int studentId, int semesterId)
         {
-            var student = await _context.Students.FindAsync(studentId);
-            var semester = await _context.Semesters.FindAsync(semesterId);
-
-            if(studentId == null ||  semesterId == null){
-                return NotFound("Student or Semester not Found");
+            try
+            {
+                var result = await _studentService.LinkSemester(studentId, semesterId);
+                return Ok(result);
             }
-            student.semester = semester;
-            await _context.SaveChangesAsync();
-
-            return Ok("Student assigned to Semester successfully");
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Getall()
         {
-            var result = await _context.Students
-                .Include(s => s.semester)
-                .Select(s => new StudentDtoRead
-                {
-                    Name = s.Name,
-                    Semester = s.semester == null ? null : new SemesterDto
-                    {
-                        Name = s.semester.Name
-                        
-                    }
-                })
-                .ToListAsync();
+            var result = await _studentService.Getall();
             //var data = await _context.Students
             //    .Select(s => new StudentDto
             //    {
@@ -96,13 +79,7 @@ namespace practicing.Controllers
             //    })
             //    .FirstOrDefaultAsync();
 
-            var student = await  _context.Students
-                .Include(x => x.semester)
-                .ThenInclude(x=> x.join)
-                .ThenInclude( x => x.subject)
-                 .FirstOrDefaultAsync();
-
-
+            var student = await _studentService.GetStudentById(Id);
 
             if (student == null)
                 return NotFound();
@@ -116,13 +93,15 @@ namespace practicing.Controllers
 
         public async Task<IActionResult> Delete(int Id)
         {
-            var student = await _context.Students.FindAsync(Id);
-            if (student is null)
-                return NotFound();
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
-
-            return Ok("Deleted Successfully");
+            try
+            {
+                var result = await _studentService.Delete(Id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }
