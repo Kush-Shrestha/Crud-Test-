@@ -1,7 +1,7 @@
-﻿using practicing.Dtos;
-using practicing.Entity;
+﻿using practicing.Domain.Dtos;
+using practicing.Domain.Entity;
 
-namespace practicing.Repository
+namespace practicing.Application.Repository
 {
     public interface IStudentRepository
     {

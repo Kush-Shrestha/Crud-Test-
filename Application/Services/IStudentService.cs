@@ -1,5 +1,5 @@
-﻿using practicing.Dtos;
-using practicing.Entity;
+﻿using practicing.Domain.Dtos;
+using practicing.Domain.Entity;
 
 namespace practicing.Services
 {

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using practicing.Data;
+using Crud.Application.Services;
 using practicing.Domain.Dtos;
-using practicing.Entity;
 
 namespace practicing.Controllers
 {
@@ -11,32 +9,24 @@ namespace practicing.Controllers
     [ApiController]
     public class AssignSubjectController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public AssignSubjectController(AppDbContext DbContext)
+        private readonly IAssignSubjectService _assignSubjectService;
+        
+        public AssignSubjectController(IAssignSubjectService assignSubjectService)
         {
-            _context = DbContext;
+            _assignSubjectService = assignSubjectService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AssignSubjectDto dto)
         {
-            // Check if both exist
-            var semesterExists = await _context.Semesters.AnyAsync(s => s.Id == dto.semesterId);
-            var subjectExists = await _context.Subjects.AnyAsync(s => s.Id == dto.subjectId);
-
-            if (!semesterExists || !subjectExists)
+            var result = await _assignSubjectService.Add(dto);
+            
+            if (result.Contains("Invalid"))
             {
-                return BadRequest("Invalid Semester or Subject ID.");
+                return BadRequest(result);
             }
-            var link = new AssignSubject
-            {
-                semesterId = dto.semesterId,
-                subjectId = dto.subjectId
-            };
-            _context.Semester_Subjects.Add(link);
-            await _context.SaveChangesAsync();
-            return Ok("Link Successfully");
-
+            
+            return Ok(result);
         }
     }
 }

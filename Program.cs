@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using practicing.Application.Services;
+using practicing.Services;
 using practicing.Data;
+using practicing.Application.Repository;
+using Crud.Application.Services;
+using Crud.Application.Repository;
 
 namespace practicing
 {
@@ -19,7 +22,11 @@ namespace practicing
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Register Services and Repositories
             builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IAssignSubjectService, AssignSubjectService>();
+            builder.Services.AddScoped<IAssignSubjectRepository, AssignSubjectRepository>();
             
 
             var app = builder.Build();

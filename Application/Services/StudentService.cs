@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using practicing.Data;
-using practicing.Dtos;
-using practicing.Entity;
-using practicing.Repository;
+using practicing.Domain.Dtos;
+using practicing.Domain.Entity;
+using practicing.Application.Repository;
 
 namespace practicing.Services
 {

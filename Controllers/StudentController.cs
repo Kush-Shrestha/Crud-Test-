@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using practicing.Data;
-using practicing.Dtos;
+using practicing.Domain.Dtos;
 using practicing.Services;
-using practicing.Entity;
+using practicing.Domain.Entity;
 using System.Net.WebSockets;
 
 namespace practicing.Controllers

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using practicing.Data;
 using practicing.Domain.Dtos;
-using practicing.Entity;
+using practicing.Domain.Entity;
 
 namespace practicing.Controllers
 {
