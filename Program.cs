@@ -27,6 +27,8 @@ namespace practicing
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IAssignSubjectService, AssignSubjectService>();
             builder.Services.AddScoped<IAssignSubjectRepository, AssignSubjectRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             
 
             var app = builder.Build();
