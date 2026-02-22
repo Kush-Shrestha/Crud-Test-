@@ -20,14 +20,14 @@ namespace Crud.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto dto)
+        public async Task<IActionResult> Register(RegisterDto request)
         {
-            if (string.IsNullOrEmpty(dto.Email) || string.IsNullOrEmpty(dto.Password) || string.IsNullOrEmpty(dto.Username))
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password) || string.IsNullOrEmpty(request.Username))
             {
                 return BadRequest("All fields are required");
             }
 
-            var result = await _authService.Register(dto);
+            var result = await _authService.Register(request);
 
             if (result.UserId == 0)
             {

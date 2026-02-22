@@ -12,5 +12,6 @@ namespace practicing.Data
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<AssignSubject> Semester_Subjects { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
